@@ -23,6 +23,17 @@ log.txt
 /platforms
 /plugins
 
+# Capacitor
+android/app/src/main/assets/public
+android/app/src/main/res/values/strings.xml
+android/app/src/main/assets/capacitor.config.json
+android/app/src/main/assets/capacitor.plugins.json
+android/app/src/main/java/io/ionic/starter/MainActivity.java
+ios/App/App/capacitor.config.json
+ios/App/App/config.xml
+ios/App/public
+ios/App/App/public
+
 # Compiled output
 /dist
 /tmp
@@ -68,3 +79,56 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Additional Capacitor/Mobile specific
+# Android
+android/.gradle/
+android/app/build/
+android/build/
+android/gradle/
+android/app/src/main/assets/public/
+android/app/src/main/java/**/MainActivity.java
+
+# iOS
+ios/App/Pods/
+ios/App/public/
+ios/App/App/public/
+ios/App/build/
+ios/App/*.xcworkspace/xcuserdata/
+ios/App/*.xcodeproj/xcuserdata/
+ios/App/*.xcodeproj/project.xcworkspace/xcuserdata/
+ios/App/App/config.xml
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Build artifacts
+*.tgz
+*.tar.gz
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# Dependency directories
+jspm_packages/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
