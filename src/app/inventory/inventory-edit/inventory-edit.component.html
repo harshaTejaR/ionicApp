@@ -1,3 +1,30 @@
-<p>
-  inventory-edit works!
-</p>
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/inventory"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Edit Inventory Item</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Edit Inventory Item</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <form (ngSubmit)="saveItem()">
+    <ion-list>
+      <ion-item>
+        <ion-input label="Item Name" labelPlacement="floating" [(ngModel)]="itemName" name="itemName" required></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input label="Quantity" labelPlacement="floating" type="number" [(ngModel)]="quantity" name="quantity" required></ion-input>
+      </ion-item>
+    </ion-list>
+    <ion-button expand="block" type="submit">Save Changes</ion-button>
+    <ion-button expand="block" color="danger" (click)="deleteItem()">Delete Item</ion-button>
+    <ion-button expand="block" color="medium" (click)="cancel()">Cancel</ion-button>
+  </form>
+</ion-content>
