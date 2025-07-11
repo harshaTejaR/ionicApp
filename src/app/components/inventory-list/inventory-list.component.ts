@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { InventoryService } from '../inventory.service';
+import { InventoryService } from '../../inventory/inventory.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
@@ -36,9 +36,6 @@ export class InventoryListComponent  implements OnInit {
     this.filteredItems = this.inventoryItems.filter(item => item.name.toLowerCase().includes(query));
   }
 
-  addItem() {
-    this.router.navigate(['/tabs/inventory/add']);
-  }
 
   editItem(id: string) {
     this.router.navigate([`/tabs/inventory/edit/${id}`]);

@@ -1,8 +1,8 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>Add Items</ion-title>
-  </ion-toolbar>
-</ion-header>
+</ion-toolbar>
+  </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
@@ -10,4 +10,17 @@
       <ion-title size="large">Add Items</ion-title>
     </ion-toolbar>
   </ion-header>
+
+  <form (ngSubmit)="saveItem()">
+    <ion-list>
+      <ion-item>
+        <ion-input label="Item Name" labelPlacement="floating" [(ngModel)]="itemName" name="itemName" required></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input label="Quantity" labelPlacement="floating" type="number" [(ngModel)]="quantity" name="quantity" required></ion-input>
+      </ion-item>
+    </ion-list>
+    <ion-button expand="block" type="submit">Save Item</ion-button>
+    <ion-button expand="block" color="medium" (click)="cancel()">Cancel</ion-button>
+  </form>
 </ion-content>

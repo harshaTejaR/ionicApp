@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { InventoryListComponent } from './inventory-list/inventory-list.component';
-import { InventoryAddComponent } from './inventory-add/inventory-add.component';
-import { InventoryEditComponent } from './inventory-edit/inventory-edit.component';
+import { InventoryListComponent } from '../components/inventory-list/inventory-list.component';
+import { InventoryAddComponent } from '../components/inventory-add/inventory-add.component';
+import { InventoryEditComponent } from '../components/inventory-edit/inventory-edit.component';
 
 const routes: Routes = [
   {
