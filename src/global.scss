@@ -35,3 +35,107 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import '@ionic/angular/css/palettes/dark.system.css';
+
+/* Responsive breakpoints */
+@media (min-width: 768px) {
+  /* Tablet styles */
+  .content-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .form-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+  }
+}
+
+@media (min-width: 1024px) {
+  /* Large tablet and desktop styles */
+  .content-container {
+    max-width: 1200px;
+    padding: 40px;
+  }
+  
+  .form-container {
+    max-width: 800px;
+    padding: 40px;
+  }
+  
+  .grid-container {
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 30px;
+  }
+}
+
+/* Enhanced card styles */
+.enhanced-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin: 8px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.enhanced-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Button improvements */
+.action-button {
+  --border-radius: 8px;
+  --padding-top: 12px;
+  --padding-bottom: 12px;
+  margin: 8px 0;
+  font-weight: 500;
+}
+
+/* Input improvements */
+.enhanced-input {
+  --border-radius: 8px;
+  --padding-start: 16px;
+  --padding-end: 16px;
+  margin: 8px 0;
+}
+
+/* Typography improvements */
+.item-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--ion-color-primary);
+}
+
+.item-subtitle {
+  font-size: 0.9rem;
+  color: var(--ion-color-medium);
+  margin-top: 4px;
+}
+
+.item-highlight {
+  font-weight: 600;
+  color: var(--ion-color-success);
+}
+
+.timestamp {
+  font-size: 0.75rem;
+  color: var(--ion-color-medium);
+  font-style: italic;
+  margin-top: 4px;
+}
+
+/* Utility classes */
+.text-center {
+  text-align: center;
+}
+
+.margin-auto {
+  margin: 0 auto;
+}

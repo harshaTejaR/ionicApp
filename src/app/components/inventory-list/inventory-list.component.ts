@@ -3,6 +3,8 @@ import { InventoryService } from '../../inventory/inventory.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
+import { addIcons } from 'ionicons';
+import { calendarOutline, createOutline, archiveOutline } from 'ionicons/icons';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -16,7 +18,9 @@ export class InventoryListComponent  implements OnInit {
   inventoryItems: any[] = [];
   filteredItems: any[] = [];
 
-  constructor(private inventoryService: InventoryService, private router: Router) { }
+  constructor(private inventoryService: InventoryService, private router: Router) {
+    addIcons({ calendarOutline, createOutline, archiveOutline });
+  }
 
   ngOnInit() {
     this.loadInventory();

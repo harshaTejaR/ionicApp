@@ -11,17 +11,53 @@
     </ion-toolbar>
   </ion-header>
 
-  <ion-searchbar (ionInput)="handleSearch($event)" placeholder="Search inventory"></ion-searchbar>
+  <div class="content-container">
+    <ion-searchbar 
+      (ionInput)="handleSearch($event)" 
+      placeholder="Search inventory"
+      class="enhanced-input"
+      debounce="300">
+    </ion-searchbar>
 
-  <ion-list>
-    <ion-item *ngFor="let item of filteredItems" (click)="editItem(item.id)">
-      <ion-label>
-        <h2>{{ item.name }}</h2>
-        <p>Quantity: {{ item.quantity }}</p>
-        <p class="timestamp" *ngIf="item.dateAdded">Added: {{ item.dateAdded }}</p>
-        <p class="timestamp" *ngIf="item.lastModified">Last Modified: {{ item.lastModified }}</p>
-      </ion-label>
-    </ion-item>
-  </ion-list>
+    <div class="grid-container">
+      <ion-card *ngFor="let item of filteredItems" (click)="editItem(item.id)" class="enhanced-card">
+        <ion-card-header>
+          <ion-card-title class="item-title">{{ item.name }}</ion-card-title>
+          <ion-card-subtitle class="item-subtitle">Quantity: {{ item.quantity }}</ion-card-subtitle>
+        </ion-card-header>
+        
+        <ion-card-content>
+          <div *ngIf="item.length && item.width" class="dimensions-info">
+            <ion-chip color="primary">
+              <ion-label>{{ item.length }}m × {{ item.width }}m</ion-label>
+            </ion-chip>
+          </div>
+          
+          <div *ngIf="item.area" class="area-info">
+            <ion-chip color="success">
+              <ion-label class="item-highlight">{{ item.area }} m²</ion-label>
+            </ion-chip>
+          </div>
+          
+          <div class="timestamp-info">
+            <p class="timestamp" *ngIf="item.dateAdded">
+              <ion-icon name="calendar-outline" size="small"></ion-icon>
+              Added: {{ item.dateAdded }}
+            </p>
+            <p class="timestamp" *ngIf="item.lastModified">
+              <ion-icon name="create-outline" size="small"></ion-icon>
+              Modified: {{ item.lastModified }}
+            </p>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+    
+    <div *ngIf="filteredItems.length === 0" class="empty-state">
+      <ion-icon name="archive-outline" size="large"></ion-icon>
+      <h2>No items found</h2>
+      <p>Start by adding some inventory items.</p>
+    </div>
+  </div>
 
 </ion-content>
