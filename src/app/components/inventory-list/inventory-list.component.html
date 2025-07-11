@@ -18,6 +18,8 @@
       <ion-label>
         <h2>{{ item.name }}</h2>
         <p>Quantity: {{ item.quantity }}</p>
+        <p class="timestamp" *ngIf="item.dateAdded">Added: {{ item.dateAdded }}</p>
+        <p class="timestamp" *ngIf="item.lastModified">Last Modified: {{ item.lastModified }}</p>
       </ion-label>
     </ion-item>
   </ion-list>

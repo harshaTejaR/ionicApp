@@ -27,7 +27,12 @@ export class InventoryService {
   }
 
   addItem(item: { name: string, quantity: number }) {
-    const newItem = { id: Date.now().toString(), ...item };
+    const newItem = { 
+      id: Date.now().toString(), 
+      ...item, 
+      timestamp: new Date().toISOString(),
+      dateAdded: new Date().toLocaleString()
+    };
     this.inventoryItems.push(newItem);
     this.saveToLocalStorage();
   }
@@ -35,7 +40,12 @@ export class InventoryService {
   updateItem(id: string, updatedItem: { name?: string, quantity?: number }) {
     const index = this.inventoryItems.findIndex(item => item.id === id);
     if (index > -1) {
-      this.inventoryItems[index] = { ...this.inventoryItems[index], ...updatedItem };
+      // Preserve the original timestamp when updating
+      this.inventoryItems[index] = { 
+        ...this.inventoryItems[index], 
+        ...updatedItem,
+        lastModified: new Date().toLocaleString()
+      };
       this.saveToLocalStorage();
     }
   }

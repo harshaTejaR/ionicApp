@@ -28,6 +28,12 @@ export class InventoryListComponent  implements OnInit {
 
   loadInventory() {
     this.inventoryItems = this.inventoryService.getInventory();
+    // Sort by timestamp (newest first)
+    this.inventoryItems.sort((a, b) => {
+      const timeA = new Date(a.timestamp || 0).getTime();
+      const timeB = new Date(b.timestamp || 0).getTime();
+      return timeB - timeA;
+    });
     this.filteredItems = [...this.inventoryItems];
   }
 
