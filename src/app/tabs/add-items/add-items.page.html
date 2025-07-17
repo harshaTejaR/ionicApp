@@ -1,26 +1,283 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Add Items</ion-title>
-</ion-toolbar>
-  </ion-header>
+    <ion-title>Add New Item</ion-title>
+  </ion-toolbar>
+</ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Add Items</ion-title>
+      <ion-title size="large">Add New Item</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <form (ngSubmit)="saveItem()">
-    <ion-list>
-      <ion-item>
-        <ion-input label="Item Name" labelPlacement="floating" [(ngModel)]="itemName" name="itemName" required></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-input label="Quantity" labelPlacement="floating" type="number" [(ngModel)]="quantity" name="quantity" required></ion-input>
-      </ion-item>
-    </ion-list>
-    <ion-button expand="block" type="submit">Save Item</ion-button>
-    <ion-button expand="block" color="medium" (click)="cancel()">Cancel</ion-button>
-  </form>
+  <div class="form-container">
+    <form #addItemForm="ngForm" (ngSubmit)="saveItem(addItemForm)">
+      <!-- Basic Information Card -->
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="add-circle-outline" color="primary"></ion-icon>
+            Basic Information
+          </ion-card-title>
+          <ion-card-subtitle>Enter the basic details for your item</ion-card-subtitle>
+        </ion-card-header>
+        
+        <ion-card-content>
+          <ion-list>
+            <ion-item>
+              <ion-input 
+                label="Item Name" 
+                labelPlacement="floating" 
+                [(ngModel)]="itemName" 
+                name="itemName" 
+                required 
+                #itemNameInput="ngModel"
+                placeholder="Enter item name"
+                clearInput="true"
+                [class.ion-invalid]="itemNameInput.invalid && itemNameInput.touched"
+                [class.ion-touched]="itemNameInput.touched">
+              </ion-input>
+            </ion-item>
+            <div *ngIf="itemNameInput.invalid && itemNameInput.touched" class="error-message">
+              <ion-text color="danger">
+                <small>Item name is required</small>
+              </ion-text>
+            </div>
+            
+            <ion-item>
+              <ion-input 
+                label="Quantity" 
+                labelPlacement="floating" 
+                type="number" 
+                [(ngModel)]="quantity" 
+                name="quantity" 
+                required 
+                min="1"
+                #quantityInput="ngModel"
+                placeholder="Enter quantity"
+                clearInput="true"
+                [class.ion-invalid]="quantityInput.invalid && quantityInput.touched"
+                [class.ion-touched]="quantityInput.touched">
+              </ion-input>
+            </ion-item>
+            <div *ngIf="quantityInput.invalid && quantityInput.touched" class="error-message">
+              <ion-text color="danger">
+                <small>Quantity must be greater than 0</small>
+              </ion-text>
+            </div>
+
+            <ion-item>
+              <ion-select 
+                label="Category" 
+                labelPlacement="floating" 
+                [(ngModel)]="category" 
+                name="category"
+                placeholder="Select category">
+                <ion-select-option value="electronics">Electronics</ion-select-option>
+                <ion-select-option value="clothing">Clothing</ion-select-option>
+                <ion-select-option value="food">Food</ion-select-option>
+                <ion-select-option value="books">Books</ion-select-option>
+                <ion-select-option value="furniture">Furniture</ion-select-option>
+                <ion-select-option value="tools">Tools</ion-select-option>
+                <ion-select-option value="other">Other</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-list>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Dimensions Card -->
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="resize-outline" color="secondary"></ion-icon>
+            Dimensions
+          </ion-card-title>
+          <ion-card-subtitle>Specify the physical dimensions of the item</ion-card-subtitle>
+        </ion-card-header>
+        
+        <ion-card-content>
+          <ion-list>
+            <div class="dimension-row">
+              <ion-item class="dimension-item">
+                <ion-input 
+                  label="Length" 
+                  labelPlacement="floating" 
+                  type="number" 
+                  [(ngModel)]="length" 
+                  name="length" 
+                  min="0"
+                  step="0.01"
+                  placeholder="0.00">
+                </ion-input>
+              </ion-item>
+              <ion-item class="dimension-item">
+                <ion-input 
+                  label="Width (Breadth)" 
+                  labelPlacement="floating" 
+                  type="number" 
+                  [(ngModel)]="width" 
+                  name="width" 
+                  min="0"
+                  step="0.01"
+                  placeholder="0.00">
+                </ion-input>
+              </ion-item>
+            </div>
+            
+            <div class="dimension-row">
+              <ion-item class="dimension-item">
+                <ion-input 
+                  label="Height" 
+                  labelPlacement="floating" 
+                  type="number" 
+                  [(ngModel)]="height" 
+                  name="height" 
+                  min="0"
+                  step="0.01"
+                  placeholder="0.00">
+                </ion-input>
+              </ion-item>
+              <ion-item class="dimension-item">
+                <ion-select 
+                  label="Unit" 
+                  labelPlacement="floating" 
+                  [(ngModel)]="dimensionUnit" 
+                  name="dimensionUnit"
+                  placeholder="Select unit">
+                  <ion-select-option value="m">Meters (m)</ion-select-option>
+                  <ion-select-option value="cm">Centimeters (cm)</ion-select-option>
+                  <ion-select-option value="mm">Millimeters (mm)</ion-select-option>
+                  <ion-select-option value="in">Inches (in)</ion-select-option>
+                  <ion-select-option value="ft">Feet (ft)</ion-select-option>
+                </ion-select>
+              </ion-item>
+            </div>
+            
+            <div *ngIf="hasDimensions()" class="dimension-summary">
+              <ion-chip color="primary">
+                <ion-icon name="cube-outline"></ion-icon>
+                <ion-label>{{ getDimensionSummary() }}</ion-label>
+              </ion-chip>
+            </div>
+          </ion-list>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Additional Details Card -->
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="document-text-outline" color="tertiary"></ion-icon>
+            Additional Details
+          </ion-card-title>
+          <ion-card-subtitle>Optional information about the item</ion-card-subtitle>
+        </ion-card-header>
+        
+        <ion-card-content>
+          <ion-list>
+            <ion-item>
+              <ion-input 
+                label="Price" 
+                labelPlacement="floating" 
+                type="number" 
+                [(ngModel)]="price" 
+                name="price" 
+                min="0"
+                step="0.01"
+                placeholder="0.00">
+                <div slot="start">₹</div>
+              </ion-input>
+            </ion-item>
+
+            <ion-item>
+              <ion-input 
+                label="Weight" 
+                labelPlacement="floating" 
+                type="number" 
+                [(ngModel)]="weight" 
+                name="weight" 
+                min="0"
+                step="0.01"
+                placeholder="0.00">
+              </ion-input>
+            </ion-item>
+
+            <ion-item>
+              <ion-select 
+                label="Weight Unit" 
+                labelPlacement="floating" 
+                [(ngModel)]="weightUnit" 
+                name="weightUnit"
+                placeholder="Select unit">
+                <ion-select-option value="kg">Kilograms (kg)</ion-select-option>
+                <ion-select-option value="g">Grams (g)</ion-select-option>
+                <ion-select-option value="lb">Pounds (lb)</ion-select-option>
+                <ion-select-option value="oz">Ounces (oz)</ion-select-option>
+              </ion-select>
+            </ion-item>
+
+            <ion-item>
+              <ion-textarea 
+                label="Description" 
+                labelPlacement="floating" 
+                [(ngModel)]="description" 
+                name="description" 
+                placeholder="Enter item description, notes, or specifications"
+                rows="4"
+                maxlength="500"
+                counter="true">
+              </ion-textarea>
+            </ion-item>
+          </ion-list>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Action Buttons -->
+      <div class="button-container">
+        <ion-button 
+          expand="block" 
+          type="submit" 
+          color="primary"
+          [disabled]="!addItemForm.valid || isLoading"
+          class="save-button">
+          <ion-icon name="save-outline" slot="start"></ion-icon>
+          <span *ngIf="!isLoading">Save Item</span>
+          <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+        </ion-button>
+        
+        <ion-button 
+          expand="block" 
+          fill="outline" 
+          color="medium" 
+          (click)="cancel()"
+          [disabled]="isLoading"
+          class="cancel-button">
+          <ion-icon name="close-outline" slot="start"></ion-icon>
+          Clear Form
+        </ion-button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Success Toast -->
+  <ion-toast 
+    [isOpen]="showSuccessToast" 
+    message="Item added successfully!" 
+    duration="2000" 
+    position="top" 
+    color="success"
+    (didDismiss)="showSuccessToast = false">
+  </ion-toast>
+
+  <!-- Error Toast -->
+  <ion-toast 
+    [isOpen]="showErrorToast" 
+    message="Error adding item. Please try again." 
+    duration="3000" 
+    position="top" 
+    color="danger"
+    (didDismiss)="showErrorToast = false">
+  </ion-toast>
 </ion-content>

@@ -26,7 +26,7 @@ export class InventoryService {
     return this.inventoryItems.find(item => item.id === id);
   }
 
-  addItem(item: { name: string, quantity: number }) {
+  addItem(item: { name: string, quantity: number, category?: string, price?: number, description?: string, dimensions?: { length: number, width: number, height: number, unit: string }, weight?: { value: number, unit: string } }) {
     const newItem = { 
       id: Date.now().toString(), 
       ...item, 
