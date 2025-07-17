@@ -1,0 +1,28 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Profile</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <ion-card *ngIf="currentUser">
+    <ion-card-header>
+      <ion-card-title>
+        <ion-avatar slot="start">
+          <img [src]="currentUser.imageUrl || 'assets/avatar-placeholder.png'" />
+        </ion-avatar>
+        {{ currentUser?.name }}
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+        <ion-icon name="personCircleOutline" slot="start"></ion-icon>
+        <ion-label>Email: {{ currentUser?.email }}</ion-label>
+      </ion-item>
+      <ion-button expand="block" color="danger" (click)="logout()">
+        <ion-icon name="logOutOutline" slot="start"></ion-icon>
+        Logout
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
