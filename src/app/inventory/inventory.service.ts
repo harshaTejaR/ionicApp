@@ -71,14 +71,31 @@ export class InventoryService {
       );
       const totalSurfaceArea = singleItemSurfaceArea * item.quantity;
       
-      // Format area with appropriate unit
+      // Convert to square feet based on input unit
       const unit = item.dimensions.unit;
-      const areaUnit = unit === 'cm' ? 'cm²' : unit === 'mm' ? 'mm²' : unit === 'in' ? 'in²' : unit === 'ft' ? 'ft²' : 'm²';
+      let surfaceAreaInSqFt: number;
+      
+      if (unit === 'cm') {
+        // 1 cm² = 0.00107639 ft²
+        surfaceAreaInSqFt = totalSurfaceArea * 0.00107639;
+      } else if (unit === 'mm') {
+        // 1 mm² = 0.0000107639 ft²
+        surfaceAreaInSqFt = totalSurfaceArea * 0.0000107639;
+      } else if (unit === 'in') {
+        // 1 in² = 0.00694444 ft²
+        surfaceAreaInSqFt = totalSurfaceArea * 0.00694444;
+      } else if (unit === 'm') {
+        // 1 m² = 10.7639 ft²
+        surfaceAreaInSqFt = totalSurfaceArea * 10.7639;
+      } else {
+        // Already in ft²
+        surfaceAreaInSqFt = totalSurfaceArea;
+      }
       
       newItem.totalSurfaceArea = {
-        value: totalSurfaceArea,
-        unit: areaUnit,
-        formatted: `${totalSurfaceArea.toFixed(2)} ${areaUnit}`
+        value: surfaceAreaInSqFt,
+        unit: 'ft²',
+        formatted: `${surfaceAreaInSqFt.toFixed(2)} ft²`
       };
     }
     
@@ -108,14 +125,31 @@ export class InventoryService {
           );
           const totalSurfaceArea = singleItemSurfaceArea * item.quantity;
           
-          // Format area with appropriate unit
+          // Convert to square feet based on input unit
           const unit = item.dimensions.unit;
-          const areaUnit = unit === 'cm' ? 'cm²' : unit === 'mm' ? 'mm²' : unit === 'in' ? 'in²' : unit === 'ft' ? 'ft²' : 'm²';
+          let surfaceAreaInSqFt: number;
+          
+          if (unit === 'cm') {
+            // 1 cm² = 0.00107639 ft²
+            surfaceAreaInSqFt = totalSurfaceArea * 0.00107639;
+          } else if (unit === 'mm') {
+            // 1 mm² = 0.0000107639 ft²
+            surfaceAreaInSqFt = totalSurfaceArea * 0.0000107639;
+          } else if (unit === 'in') {
+            // 1 in² = 0.00694444 ft²
+            surfaceAreaInSqFt = totalSurfaceArea * 0.00694444;
+          } else if (unit === 'm') {
+            // 1 m² = 10.7639 ft²
+            surfaceAreaInSqFt = totalSurfaceArea * 10.7639;
+          } else {
+            // Already in ft²
+            surfaceAreaInSqFt = totalSurfaceArea;
+          }
           
           item.totalSurfaceArea = {
-            value: totalSurfaceArea,
-            unit: areaUnit,
-            formatted: `${totalSurfaceArea.toFixed(2)} ${areaUnit}`
+            value: surfaceAreaInSqFt,
+            unit: 'ft²',
+            formatted: `${surfaceAreaInSqFt.toFixed(2)} ft²`
           };
         }
       }
