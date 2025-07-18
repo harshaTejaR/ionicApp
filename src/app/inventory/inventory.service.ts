@@ -62,13 +62,21 @@ export class InventoryService {
     };
     
     // Calculate total surface area if dimensions are provided
-    if (item.dimensions && item.dimensions.length > 0 && item.dimensions.width > 0 && item.dimensions.thickness > 0) {
-      // Surface Area = 2 × (Length × Width + Length × Thickness + Width × Thickness)
-      const singleItemSurfaceArea = 2 * (
-        (item.dimensions.length * item.dimensions.width) + 
-        (item.dimensions.length * item.dimensions.thickness) + 
-        (item.dimensions.width * item.dimensions.thickness)
-      );
+    if (item.dimensions && item.dimensions.length > 0 && item.dimensions.width > 0) {
+      let singleItemSurfaceArea: number;
+      
+      if (item.dimensions.thickness > 0) {
+        // Surface Area = 2 × (Length × Width + Length × Thickness + Width × Thickness)
+        singleItemSurfaceArea = 2 * (
+          (item.dimensions.length * item.dimensions.width) + 
+          (item.dimensions.length * item.dimensions.thickness) + 
+          (item.dimensions.width * item.dimensions.thickness)
+        );
+      } else {
+        // Surface Area = Length × Width (for flat items)
+        singleItemSurfaceArea = item.dimensions.length * item.dimensions.width;
+      }
+      
       const totalSurfaceArea = singleItemSurfaceArea * item.quantity;
       
       // Convert to square feet based on input unit
@@ -116,13 +124,21 @@ export class InventoryService {
       // Recalculate total surface area if quantity or dimensions are updated
       if (updatedItem.quantity !== undefined || updatedItem.dimensions !== undefined) {
         const item = this.inventoryItems[index];
-        if (item.dimensions && item.dimensions.length > 0 && item.dimensions.width > 0 && item.dimensions.thickness > 0) {
-          // Surface Area = 2 × (Length × Width + Length × Thickness + Width × Thickness)
-          const singleItemSurfaceArea = 2 * (
-            (item.dimensions.length * item.dimensions.width) + 
-            (item.dimensions.length * item.dimensions.thickness) + 
-            (item.dimensions.width * item.dimensions.thickness)
-          );
+        if (item.dimensions && item.dimensions.length > 0 && item.dimensions.width > 0) {
+          let singleItemSurfaceArea: number;
+          
+          if (item.dimensions.thickness > 0) {
+            // Surface Area = 2 × (Length × Width + Length × Thickness + Width × Thickness)
+            singleItemSurfaceArea = 2 * (
+              (item.dimensions.length * item.dimensions.width) + 
+              (item.dimensions.length * item.dimensions.thickness) + 
+              (item.dimensions.width * item.dimensions.thickness)
+            );
+          } else {
+            // Surface Area = Length × Width (for flat items)
+            singleItemSurfaceArea = item.dimensions.length * item.dimensions.width;
+          }
+          
           const totalSurfaceArea = singleItemSurfaceArea * item.quantity;
           
           // Convert to square feet based on input unit

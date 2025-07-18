@@ -1,0 +1,25 @@
+.dimension-row {
+  display: flex;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+.dimension-item {
+  flex: 1;
+}
+
+.dimension-summary {
+  margin: 16px 0;
+  text-align: center;
+}
+
+.dimension-summary ion-chip {
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .dimension-row {
+    flex-direction: column;
+    gap: 4px;
+  }
+}
