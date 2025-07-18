@@ -103,7 +103,7 @@ export class InventoryService {
     this.saveToLocalStorage();
   }
 
-  updateItem(id: string, updatedItem: { name?: string, quantity?: number }) {
+  updateItem(id: string, updatedItem: { name?: string, quantity?: number, dimensions?: { length: number, width: number, thickness: number, unit: string } }) {
     const index = this.inventoryItems.findIndex(item => item.id === id);
     if (index > -1) {
       // Preserve the original timestamp when updating
@@ -113,8 +113,8 @@ export class InventoryService {
         lastModified: new Date().toLocaleString()
       };
       
-      // Recalculate total surface area if quantity is updated and dimensions exist
-      if (updatedItem.quantity !== undefined) {
+      // Recalculate total surface area if quantity or dimensions are updated
+      if (updatedItem.quantity !== undefined || updatedItem.dimensions !== undefined) {
         const item = this.inventoryItems[index];
         if (item.dimensions && item.dimensions.length > 0 && item.dimensions.width > 0 && item.dimensions.thickness > 0) {
           // Surface Area = 2 × (Length × Width + Length × Thickness + Width × Thickness)
@@ -151,6 +151,9 @@ export class InventoryService {
             unit: 'ft²',
             formatted: `${surfaceAreaInSqFt.toFixed(2)} ft²`
           };
+        } else {
+          // If dimensions are not valid, remove surface area
+          delete item.totalSurfaceArea;
         }
       }
       

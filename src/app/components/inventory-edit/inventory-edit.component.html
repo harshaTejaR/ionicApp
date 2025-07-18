@@ -23,20 +23,80 @@
         <ion-input label="Quantity" labelPlacement="floating" type="number" [(ngModel)]="quantity" name="quantity" required></ion-input>
       </ion-item>
       
-      <!-- Show dimensions and surface area information if available -->
-      <ion-item *ngIf="item?.dimensions && item.dimensions.length > 0 && item.dimensions.width > 0">
+      <!-- Dimension Editing -->
+      <ion-item>
         <ion-label>
           <h2>Dimensions</h2>
-          <p>{{ item.dimensions.length }}{{ item.dimensions.unit }} × {{ item.dimensions.width }}{{ item.dimensions.unit }}</p>
-          <p *ngIf="item.dimensions.thickness > 0">Thickness: {{ item.dimensions.thickness }}{{ item.dimensions.unit }}</p>
+          <p>Edit the dimensions of the item</p>
+        </ion-label>
+      </ion-item>
+
+      <ion-item>
+        <ion-input 
+          label="Length" 
+          labelPlacement="floating" 
+          type="number" 
+          [(ngModel)]="length" 
+          name="length" 
+          min="0"
+          step="0.01"
+          placeholder="0.00">
+        </ion-input>
+      </ion-item>
+      
+      <ion-item>
+        <ion-input 
+          label="Width (Breadth)" 
+          labelPlacement="floating" 
+          type="number" 
+          [(ngModel)]="width" 
+          name="width" 
+          min="0"
+          step="0.01"
+          placeholder="0.00">
+        </ion-input>
+      </ion-item>
+      
+      <ion-item>
+        <ion-input 
+          label="Thickness" 
+          labelPlacement="floating" 
+          type="number" 
+          [(ngModel)]="thickness" 
+          name="thickness" 
+          min="0"
+          step="0.01"
+          placeholder="0.00">
+        </ion-input>
+      </ion-item>
+      
+      <ion-item>
+        <ion-select 
+          label="Unit" 
+          labelPlacement="floating" 
+          [(ngModel)]="dimensionUnit" 
+          name="dimensionUnit"
+          placeholder="Select unit">
+          <ion-select-option value="m">Meters (m)</ion-select-option>
+          <ion-select-option value="cm">Centimeters (cm)</ion-select-option>
+          <ion-select-option value="mm">Millimeters (mm)</ion-select-option>
+          <ion-select-option value="in">Inches (in)</ion-select-option>
+          <ion-select-option value="ft">Feet (ft)</ion-select-option>
+        </ion-select>
+      </ion-item>
+      
+      <ion-item *ngIf="hasDimensions()">
+        <ion-label>
+          <h3>Dimension Summary</h3>
+          <p>{{ getDimensionSummary() }}</p>
         </ion-label>
       </ion-item>
       
       <ion-item *ngIf="item?.totalSurfaceArea">
         <ion-label>
-          <h2>Total Surface Area</h2>
+          <h3>Current Surface Area</h3>
           <p>{{ item.totalSurfaceArea.formatted }}</p>
-          <p><small>Surface area per item: {{ (item.totalSurfaceArea.value / item.quantity).toFixed(2) }} {{ item.totalSurfaceArea.unit }}</small></p>
+          <p><small>Note: Surface area will be recalculated after saving</small></p>
         </ion-label>
       </ion-item>
     </ion-list>
