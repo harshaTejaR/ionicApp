@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonButton, IonAvatar, IonItem, IonLabel, IonIcon } from '@ionic/angular/standalone';
 import { AuthService, User } from '../auth.service';
 import { addIcons } from 'ionicons';
-import { logOutOutline, personCircleOutline } from 'ionicons/icons';
+import { logOutOutline, personCircleOutline, mailOutline, keyOutline, calendarOutline, saveOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-profile',
@@ -19,11 +19,12 @@ export class ProfilePage implements OnInit {
   currentUser: User | null = null;
 
   constructor(private authService: AuthService, private router: Router) {
-    addIcons({ logOutOutline, personCircleOutline });
+    addIcons({ logOutOutline, personCircleOutline, mailOutline, keyOutline, calendarOutline, saveOutline });
   }
 
-  async ngOnInit() {
-    this.currentUser = await this.authService.getCurrentUser();
+  ngOnInit() {
+    // Use synchronous method to get current user from session storage
+    this.currentUser = this.authService.getCurrentUserSync();
     if (!this.currentUser) {
       this.router.navigate(['/login']);
     }
@@ -32,6 +33,15 @@ export class ProfilePage implements OnInit {
   async logout() {
     await this.authService.signOut();
     this.router.navigate(['/login']);
+  }
+
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
   }
 
 }

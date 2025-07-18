@@ -191,6 +191,9 @@ export class AuthService {
 
   async signOut(): Promise<void> {
     try {
+      // Save work progress before signing out
+      await this.saveWorkProgressBeforeLogout();
+      
       if (this.currentUserSubject.value?.authMethod === 'google') {
         await GoogleAuth.signOut();
       }
@@ -203,6 +206,13 @@ export class AuthService {
   }
 
   async getCurrentUser(): Promise<User | null> {
+    // First check if we have a current user in session
+    const currentUser = this.getCurrentUserSync();
+    if (currentUser) {
+      return currentUser;
+    }
+
+    // Only try Google Auth if no session exists and we need to authenticate
     try {
       const googleUser = await GoogleAuth.signIn();
       if (googleUser) {
@@ -215,6 +225,7 @@ export class AuthService {
           authMethod: 'google'
         };
         this.currentUserSubject.next(user);
+        this.saveUserSession(user);
         return user;
       }
       return null;
@@ -340,6 +351,99 @@ export class AuthService {
       localStorage.removeItem('currentUser');
     } catch (error) {
       console.error('Failed to clear user session:', error);
+    }
+  }
+
+  // Work progress saving before logout
+  private async saveWorkProgressBeforeLogout(): Promise<void> {
+    try {
+      const currentUser = this.getCurrentUserSync();
+      if (!currentUser) {
+        return;
+      }
+
+      // Collect current app state
+      const currentState = {
+        inventoryData: this.getInventoryData(),
+        currentTab: this.getCurrentTab(),
+        formData: this.getFormData(),
+        timestamp: new Date().toISOString()
+      };
+
+      // Save to filesystem
+      const workProgressFile = `work_progress_${currentUser.id}.json`;
+      await Filesystem.writeFile({
+        path: workProgressFile,
+        data: JSON.stringify(currentState, null, 2),
+        directory: Directory.Data,
+        encoding: Encoding.UTF8,
+      });
+
+      console.log('Work progress saved before logout');
+    } catch (error) {
+      console.error('Error saving work progress before logout:', error);
+    }
+  }
+
+  // Helper methods to collect current app state
+  private getInventoryData(): any[] {
+    try {
+      const inventoryData = localStorage.getItem('inventoryData');
+      return inventoryData ? JSON.parse(inventoryData) : [];
+    } catch {
+      return [];
+    }
+  }
+
+  private getCurrentTab(): string {
+    return localStorage.getItem('currentTab') || 'inventory';
+  }
+
+  private getFormData(): any {
+    try {
+      const formData = localStorage.getItem('formData');
+      return formData ? JSON.parse(formData) : {};
+    } catch {
+      return {};
+    }
+  }
+
+  // Method to restore work progress after login
+  async restoreWorkProgress(): Promise<void> {
+    try {
+      const currentUser = this.getCurrentUserSync();
+      if (!currentUser) {
+        return;
+      }
+
+      const workProgressFile = `work_progress_${currentUser.id}.json`;
+      const result = await Filesystem.readFile({
+        path: workProgressFile,
+        directory: Directory.Data,
+        encoding: Encoding.UTF8,
+      });
+
+      const workProgress = JSON.parse(result.data as string);
+      if (workProgress) {
+        // Restore inventory data
+        if (workProgress.inventoryData) {
+          localStorage.setItem('inventoryData', JSON.stringify(workProgress.inventoryData));
+        }
+
+        // Restore current tab
+        if (workProgress.currentTab) {
+          localStorage.setItem('currentTab', workProgress.currentTab);
+        }
+
+        // Restore form data
+        if (workProgress.formData) {
+          localStorage.setItem('formData', JSON.stringify(workProgress.formData));
+        }
+
+        console.log('Work progress restored successfully');
+      }
+    } catch (error) {
+      console.log('No work progress found or error restoring:', error);
     }
   }
 }
