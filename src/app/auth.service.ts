@@ -11,6 +11,8 @@ export interface User {
   name: string;
   imageUrl?: string;
   registeredAt: string;
+  authMethod: 'email' | 'google';
+  password?: string; // Only for email auth (hashed)
 }
 
 @Injectable({
@@ -25,6 +27,7 @@ export class AuthService {
   constructor(private platform: Platform) {
     this.initializeGoogleAuth();
     this.loadUsers();
+    this.restoreUserSession();
   }
 
   private async initializeGoogleAuth() {
@@ -63,7 +66,8 @@ export class AuthService {
         email: googleUser.email,
         name: googleUser.name,
         imageUrl: googleUser.imageUrl,
-        registeredAt: new Date().toISOString()
+        registeredAt: new Date().toISOString(),
+        authMethod: 'google'
       };
 
       console.log('User object created:', user);
@@ -83,6 +87,7 @@ export class AuthService {
       }
 
       this.currentUserSubject.next(user);
+      this.saveUserSession(user);
       return user;
     } catch (error: any) {
       console.error('Google Sign In failed:', error);
@@ -104,10 +109,94 @@ export class AuthService {
     }
   }
 
+  // Email/Password Authentication Methods
+  async registerWithEmail(email: string, password: string, name: string): Promise<User> {
+    try {
+      // Check if user already exists
+      const existingUser = this.getUserByEmail(email);
+      if (existingUser) {
+        throw new Error('User with this email already exists');
+      }
+
+      // Validate email format
+      if (!this.isValidEmail(email)) {
+        throw new Error('Please enter a valid email address');
+      }
+
+      // Validate password
+      if (password.length < 6) {
+        throw new Error('Password must be at least 6 characters long');
+      }
+
+      // Create new user
+      const user: User = {
+        id: this.generateUserId(),
+        email: email.toLowerCase(),
+        name: name,
+        registeredAt: new Date().toISOString(),
+        authMethod: 'email',
+        password: await this.hashPassword(password)
+      };
+
+      // Save user
+      this.users.push(user);
+      await this.saveUsers();
+
+      // Set current user (remove password from returned object)
+      const userWithoutPassword = { ...user };
+      delete userWithoutPassword.password;
+      this.currentUserSubject.next(userWithoutPassword);
+      this.saveUserSession(userWithoutPassword);
+
+      console.log('User registered successfully:', userWithoutPassword);
+      return userWithoutPassword;
+    } catch (error: any) {
+      console.error('Registration failed:', error);
+      throw error;
+    }
+  }
+
+  async signInWithEmail(email: string, password: string): Promise<User> {
+    try {
+      // Find user by email
+      const user = this.getUserByEmail(email.toLowerCase());
+      if (!user) {
+        throw new Error('Invalid email or password');
+      }
+
+      // Check if user registered with email
+      if (user.authMethod !== 'email') {
+        throw new Error('This email is registered with a different method');
+      }
+
+      // Verify password
+      const isPasswordValid = await this.verifyPassword(password, user.password!);
+      if (!isPasswordValid) {
+        throw new Error('Invalid email or password');
+      }
+
+      // Set current user (remove password from returned object)
+      const userWithoutPassword = { ...user };
+      delete userWithoutPassword.password;
+      this.currentUserSubject.next(userWithoutPassword);
+      this.saveUserSession(userWithoutPassword);
+
+      console.log('User signed in successfully:', userWithoutPassword);
+      return userWithoutPassword;
+    } catch (error: any) {
+      console.error('Sign in failed:', error);
+      throw error;
+    }
+  }
+
   async signOut(): Promise<void> {
     try {
-      await GoogleAuth.signOut();
+      if (this.currentUserSubject.value?.authMethod === 'google') {
+        await GoogleAuth.signOut();
+      }
       this.currentUserSubject.next(null);
+      this.clearUserSession();
+      console.log('User signed out successfully');
     } catch (error) {
       console.error('Sign out failed:', error);
     }
@@ -122,7 +211,8 @@ export class AuthService {
           email: googleUser.email,
           name: googleUser.name,
           imageUrl: googleUser.imageUrl,
-          registeredAt: new Date().toISOString()
+          registeredAt: new Date().toISOString(),
+          authMethod: 'google'
         };
         this.currentUserSubject.next(user);
         return user;
@@ -175,6 +265,81 @@ export class AuthService {
       });
     } catch (error) {
       console.error('Error saving users:', error);
+    }
+  }
+
+  // Utility Methods
+  private generateUserId(): string {
+    return 'user_' + Date.now().toString() + '_' + Math.random().toString(36).substr(2, 9);
+  }
+
+  private isValidEmail(email: string): boolean {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
+  private async hashPassword(password: string): Promise<string> {
+    // Simple hash function for demonstration
+    // In production, use bcrypt or similar
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password + 'salt_key_for_hashing');
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  private async verifyPassword(password: string, hash: string): Promise<boolean> {
+    const hashedPassword = await this.hashPassword(password);
+    return hashedPassword === hash;
+  }
+
+  // Get current user without triggering Google sign-in
+  getCurrentUserSync(): User | null {
+    return this.currentUserSubject.value;
+  }
+
+  // Check if email is already registered
+  isEmailRegistered(email: string): boolean {
+    return this.getUserByEmail(email.toLowerCase()) !== undefined;
+  }
+
+  // Get total registered users count
+  getTotalUsers(): number {
+    return this.users.length;
+  }
+
+  // Get users by auth method
+  getUsersByAuthMethod(method: 'email' | 'google'): User[] {
+    return this.users.filter(user => user.authMethod === method);
+  }
+
+  // Session management
+  private async restoreUserSession(): Promise<void> {
+    try {
+      const sessionUser = localStorage.getItem('currentUser');
+      if (sessionUser) {
+        const user = JSON.parse(sessionUser);
+        this.currentUserSubject.next(user);
+        console.log('User session restored:', user);
+      }
+    } catch (error) {
+      console.error('Failed to restore user session:', error);
+    }
+  }
+
+  private saveUserSession(user: User): void {
+    try {
+      localStorage.setItem('currentUser', JSON.stringify(user));
+    } catch (error) {
+      console.error('Failed to save user session:', error);
+    }
+  }
+
+  private clearUserSession(): void {
+    try {
+      localStorage.removeItem('currentUser');
+    } catch (error) {
+      console.error('Failed to clear user session:', error);
     }
   }
 }

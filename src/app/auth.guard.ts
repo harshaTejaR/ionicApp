@@ -12,8 +12,8 @@ export class AuthGuard implements CanActivate {
     private router: Router
   ) {}
 
-  async canActivate(): Promise<boolean> {
-    const user = await this.authService.getCurrentUser();
+  canActivate(): boolean {
+    const user = this.authService.getCurrentUserSync();
     
     if (user) {
       return true;
