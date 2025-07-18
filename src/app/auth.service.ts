@@ -13,6 +13,8 @@ export interface User {
   registeredAt: string;
   authMethod: 'email' | 'google';
   password?: string; // Only for email auth (hashed)
+  resetToken?: string; // For password reset
+  resetTokenExpiry?: string; // ISO string for expiry
 }
 
 @Injectable({
@@ -279,10 +281,52 @@ export class AuthService {
     }
   }
 
-  // Utility Methods
-  private generateUserId(): string {
-    return 'user_' + Date.now().toString() + '_' + Math.random().toString(36).substr(2, 9);
+// Forgot Password
+async requestPasswordReset(email: string): Promise<void> {
+  const user = this.getUserByEmail(email.toLowerCase());
+  if (!user) {
+    throw new Error('Email not found');
   }
+  if (user.authMethod !== 'email') {
+    throw new Error('Password reset not supported for this account');
+  }
+  user.resetToken = this.generateToken();
+  user.resetTokenExpiry = new Date(Date.now() + 3600000).toISOString(); // 1 hour expiry
+  await this.saveUsers();
+  console.log('Reset token generated and saved for user:', user.email);
+  // Ideally, you would send an email with the reset token
+}
+
+// Reset Password
+async resetPassword(email: string, token: string, newPassword: string): Promise<void> {
+  const user = this.getUserByEmail(email.toLowerCase());
+  if (!user) {
+    throw new Error('User not found');
+  }
+  if (!user.resetToken || user.resetToken !== token) {
+    throw new Error('Invalid password reset token');
+  }
+  if (!user.resetTokenExpiry || new Date(user.resetTokenExpiry) < new Date()) {
+    throw new Error('Password reset token has expired');
+  }
+  if (newPassword.length < 6) {
+    throw new Error('Password must be at least 6 characters long');
+  }
+  user.password = await this.hashPassword(newPassword);
+  delete user.resetToken;
+  delete user.resetTokenExpiry;
+  await this.saveUsers();
+  console.log('Password reset successful for user:', user.email);
+}
+
+// Utility Methods
+private generateUserId(): string {
+  return 'user_' + Date.now().toString() + '_' + Math.random().toString(36).substr(2, 9);
+}
+
+private generateToken(): string {
+  return Math.random().toString(36).substr(2, 15) + Date.now().toString(36);
+}
 
   private isValidEmail(email: string): boolean {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

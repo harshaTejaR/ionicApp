@@ -70,6 +70,10 @@ export class LoginPage implements OnInit {
     this.router.navigate(['/register']);
   }
 
+  goToForgotPassword() {
+    this.router.navigate(['/forgot-password']);
+  }
+
   async showToast(message: string, color: string) {
     const toast = await this.toastController.create({
       message,
