@@ -79,7 +79,7 @@ export class AddItemsPage implements OnInit {
   description: string = '';
   length: number = 0;
   width: number = 0;
-  height: number = 0;
+  thickness: number = 0;
   dimensionUnit: string = 'm';
   weight: number = 0;
   weightUnit: string = 'kg';
@@ -122,7 +122,7 @@ export class AddItemsPage implements OnInit {
           dimensions: {
             length: this.length,
             width: this.width,
-            height: this.height,
+            thickness: this.thickness,
             unit: this.dimensionUnit
           },
           weight: {
@@ -168,7 +168,7 @@ export class AddItemsPage implements OnInit {
     this.price = 0;
     this.length = 0;
     this.width = 0;
-    this.height = 0;
+    this.thickness = 0;
     this.dimensionUnit = 'm'; // Default unit is meter as per user preference
     this.weight = 0;
     this.weightUnit = 'kg';
@@ -183,11 +183,11 @@ export class AddItemsPage implements OnInit {
   }
 
   hasDimensions(): boolean {
-    return this.length > 0 || this.width > 0 || this.height > 0;
+    return this.length > 0 || this.width > 0 || this.thickness > 0;
   }
 
   getDimensionSummary(): string {
-    return `${this.length.toFixed(2)} x ${this.width.toFixed(2)} x ${this.height.toFixed(2)} ${this.dimensionUnit}`;
+    return `${this.length.toFixed(2)} x ${this.width.toFixed(2)} x ${this.thickness.toFixed(2)} ${this.dimensionUnit}`;
   }
 
   private getFullDescription(): string {

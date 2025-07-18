@@ -1,10 +1,37 @@
 import { Injectable } from '@angular/core';
 
+interface InventoryItem {
+  id: string;
+  name: string;
+  quantity: number;
+  category?: string;
+  price?: number;
+  description?: string;
+  dimensions?: {
+    length: number;
+    width: number;
+    thickness: number;
+    unit: string;
+  };
+  weight?: {
+    value: number;
+    unit: string;
+  };
+  totalSurfaceArea?: {
+    value: number;
+    unit: string;
+    formatted: string;
+  };
+  timestamp: string;
+  dateAdded: string;
+  lastModified?: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class InventoryService {
-  private inventoryItems: any[] = [];
+  private inventoryItems: InventoryItem[] = [];
 
   constructor() {
     // Load from local storage if available
@@ -26,13 +53,35 @@ export class InventoryService {
     return this.inventoryItems.find(item => item.id === id);
   }
 
-  addItem(item: { name: string, quantity: number, category?: string, price?: number, description?: string, dimensions?: { length: number, width: number, height: number, unit: string }, weight?: { value: number, unit: string } }) {
-    const newItem = { 
+  addItem(item: { name: string, quantity: number, category?: string, price?: number, description?: string, dimensions?: { length: number, width: number, thickness: number, unit: string }, weight?: { value: number, unit: string } }) {
+    const newItem: InventoryItem = { 
       id: Date.now().toString(), 
       ...item, 
       timestamp: new Date().toISOString(),
       dateAdded: new Date().toLocaleString()
     };
+    
+    // Calculate total surface area if dimensions are provided
+    if (item.dimensions && item.dimensions.length > 0 && item.dimensions.width > 0 && item.dimensions.thickness > 0) {
+      // Surface Area = 2 × (Length × Width + Length × Thickness + Width × Thickness)
+      const singleItemSurfaceArea = 2 * (
+        (item.dimensions.length * item.dimensions.width) + 
+        (item.dimensions.length * item.dimensions.thickness) + 
+        (item.dimensions.width * item.dimensions.thickness)
+      );
+      const totalSurfaceArea = singleItemSurfaceArea * item.quantity;
+      
+      // Format area with appropriate unit
+      const unit = item.dimensions.unit;
+      const areaUnit = unit === 'cm' ? 'cm²' : unit === 'mm' ? 'mm²' : unit === 'in' ? 'in²' : unit === 'ft' ? 'ft²' : 'm²';
+      
+      newItem.totalSurfaceArea = {
+        value: totalSurfaceArea,
+        unit: areaUnit,
+        formatted: `${totalSurfaceArea.toFixed(2)} ${areaUnit}`
+      };
+    }
+    
     this.inventoryItems.push(newItem);
     this.saveToLocalStorage();
   }
@@ -46,6 +95,31 @@ export class InventoryService {
         ...updatedItem,
         lastModified: new Date().toLocaleString()
       };
+      
+      // Recalculate total surface area if quantity is updated and dimensions exist
+      if (updatedItem.quantity !== undefined) {
+        const item = this.inventoryItems[index];
+        if (item.dimensions && item.dimensions.length > 0 && item.dimensions.width > 0 && item.dimensions.thickness > 0) {
+          // Surface Area = 2 × (Length × Width + Length × Thickness + Width × Thickness)
+          const singleItemSurfaceArea = 2 * (
+            (item.dimensions.length * item.dimensions.width) + 
+            (item.dimensions.length * item.dimensions.thickness) + 
+            (item.dimensions.width * item.dimensions.thickness)
+          );
+          const totalSurfaceArea = singleItemSurfaceArea * item.quantity;
+          
+          // Format area with appropriate unit
+          const unit = item.dimensions.unit;
+          const areaUnit = unit === 'cm' ? 'cm²' : unit === 'mm' ? 'mm²' : unit === 'in' ? 'in²' : unit === 'ft' ? 'ft²' : 'm²';
+          
+          item.totalSurfaceArea = {
+            value: totalSurfaceArea,
+            unit: areaUnit,
+            formatted: `${totalSurfaceArea.toFixed(2)} ${areaUnit}`
+          };
+        }
+      }
+      
       this.saveToLocalStorage();
     }
   }

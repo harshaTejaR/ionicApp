@@ -27,15 +27,17 @@
         </ion-card-header>
         
         <ion-card-content>
-          <div *ngIf="item.length && item.width" class="dimensions-info">
+          <div *ngIf="item.dimensions && item.dimensions.length > 0 && item.dimensions.width > 0" class="dimensions-info">
             <ion-chip color="primary">
-              <ion-label>{{ item.length }}m × {{ item.width }}m</ion-label>
+              <ion-label>{{ item.dimensions.length }}{{ item.dimensions.unit }} × {{ item.dimensions.width }}{{ item.dimensions.unit }}
+                <span *ngIf="item.dimensions.thickness > 0"> × {{ item.dimensions.thickness }}{{ item.dimensions.unit }}</span>
+              </ion-label>
             </ion-chip>
           </div>
           
-          <div *ngIf="item.area" class="area-info">
+          <div *ngIf="item.totalSurfaceArea" class="area-info">
             <ion-chip color="success">
-              <ion-label class="item-highlight">{{ item.area }} m²</ion-label>
+              <ion-label class="item-highlight">Total Surface Area: {{ item.totalSurfaceArea.formatted }}</ion-label>
             </ion-chip>
           </div>
           

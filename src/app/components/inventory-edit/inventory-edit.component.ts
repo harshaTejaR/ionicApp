@@ -16,6 +16,7 @@ export class InventoryEditComponent  implements OnInit {
   itemId: string | null = null;
   itemName: string = '';
   quantity: number = 0;
+  item: any = null;
 
   constructor(
     private inventoryService: InventoryService,
@@ -26,10 +27,10 @@ export class InventoryEditComponent  implements OnInit {
   ngOnInit() {
     this.itemId = this.route.snapshot.paramMap.get('id');
     if (this.itemId) {
-      const item = this.inventoryService.getItem(this.itemId);
-      if (item) {
-        this.itemName = item.name;
-        this.quantity = item.quantity;
+      this.item = this.inventoryService.getItem(this.itemId);
+      if (this.item) {
+        this.itemName = this.item.name;
+        this.quantity = this.item.quantity;
       }
     }
   }
