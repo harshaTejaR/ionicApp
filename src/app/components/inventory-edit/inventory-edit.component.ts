@@ -16,6 +16,7 @@ export class InventoryEditComponent  implements OnInit {
   itemId: string | null = null;
   itemName: string = '';
   quantity: number = 0;
+  description: string = '';
   item: any = null;
   
   // Dimension fields
@@ -37,6 +38,7 @@ export class InventoryEditComponent  implements OnInit {
       if (this.item) {
         this.itemName = this.item.name;
         this.quantity = this.item.quantity;
+        this.description = this.item.description || '';
         
         // Load dimension values if they exist
         if (this.item.dimensions) {
@@ -54,6 +56,7 @@ export class InventoryEditComponent  implements OnInit {
       const updatedItem = {
         name: this.itemName,
         quantity: this.quantity,
+        description: this.description,
         dimensions: {
           length: this.length,
           width: this.width,

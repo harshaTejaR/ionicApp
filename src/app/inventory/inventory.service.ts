@@ -111,7 +111,7 @@ export class InventoryService {
     this.saveToLocalStorage();
   }
 
-  updateItem(id: string, updatedItem: { name?: string, quantity?: number, dimensions?: { length: number, width: number, thickness: number, unit: string } }) {
+  updateItem(id: string, updatedItem: { name?: string, quantity?: number, description?: string, dimensions?: { length: number, width: number, thickness: number, unit: string } }) {
     const index = this.inventoryItems.findIndex(item => item.id === id);
     if (index > -1) {
       // Preserve the original timestamp when updating

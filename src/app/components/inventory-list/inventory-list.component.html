@@ -27,6 +27,10 @@
         </ion-card-header>
         
         <ion-card-content>
+          <div *ngIf="item.description" class="description-info">
+            <p class="description-text">{{ item.description }}</p>
+          </div>
+          
           <div *ngIf="item.dimensions && item.dimensions.length > 0 && item.dimensions.width > 0" class="dimensions-info">
             <ion-chip color="primary">
               <ion-label>{{ item.dimensions.length }}{{ item.dimensions.unit }} × {{ item.dimensions.width }}{{ item.dimensions.unit }}

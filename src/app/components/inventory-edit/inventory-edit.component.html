@@ -23,6 +23,10 @@
         <ion-input label="Quantity" labelPlacement="floating" type="number" [(ngModel)]="quantity" name="quantity" required></ion-input>
       </ion-item>
       
+      <ion-item>
+        <ion-textarea label="Description" labelPlacement="floating" [(ngModel)]="description" name="description" rows="3" placeholder="Enter item description (optional)"></ion-textarea>
+      </ion-item>
+      
       <!-- Dimension Editing -->
       <ion-item>
         <ion-label>

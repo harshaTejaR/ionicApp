@@ -8,6 +8,18 @@
   gap: 4px;
 }
 
+.description-info {
+  margin: 8px 0;
+  
+  .description-text {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--ion-color-medium);
+    line-height: 1.4;
+    font-style: italic;
+  }
+}
+
 .dimensions-info,
 .area-info {
   margin: 8px 0;
