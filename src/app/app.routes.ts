@@ -13,24 +13,32 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
-    path: 'login',
-    loadComponent: () => import('./login/login.page').then( m => m.LoginPage)
+    path: 'auth',
+    loadChildren: () => import('./features/auth/auth.module').then(m => m.AuthModule)
   },
   {
-    path: 'profile',
-    loadComponent: () => import('./profile/profile.page').then( m => m.ProfilePage),
-    canActivate: [AuthGuard]
+    path: 'login',
+    redirectTo: '/auth/login',
+    pathMatch: 'full'
   },
   {
     path: 'register',
-    loadComponent: () => import('./register/register.page').then( m => m.RegisterPage)
+    redirectTo: '/auth/register',
+    pathMatch: 'full'
   },
   {
     path: 'forgot-password',
-    loadComponent: () => import('./forgot-password/forgot-password.page').then( m => m.ForgotPasswordPage)
+    redirectTo: '/auth/forgot-password',
+    pathMatch: 'full'
   },
   {
     path: 'reset-password',
-    loadComponent: () => import('./reset-password/reset-password.page').then( m => m.ResetPasswordPage)
+    redirectTo: '/auth/reset-password',
+    pathMatch: 'full'
   },
+  {
+    path: 'profile',
+    loadComponent: () => import('./profile/profile.page').then(m => m.ProfilePage),
+    canActivate: [AuthGuard]
+  }
 ];

@@ -1,0 +1,49 @@
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 20px;
+}
+
+ion-card {
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.login-btn {
+  margin-top: 20px;
+}
+
+.google-login-btn {
+  margin-top: 20px;
+}
+
+.divider {
+  text-align: center;
+  margin: 15px 0;
+  font-weight: bold;
+  color: var(--ion-color-medium);
+}
+
+.auth-links {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.forgot-password-link {
+  text-align: center;
+  margin-top: 10px;
+}
+
+ion-card-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+ion-card-content p {
+  color: var(--ion-color-medium);
+  margin-bottom: 20px;
+}

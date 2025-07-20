@@ -1,0 +1,93 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Login</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <div class="login-container">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Welcome Back</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <form #loginForm="ngForm" (ngSubmit)="loginWithEmail()">
+          <ion-item>
+            <ion-icon name="mail-outline" slot="start"></ion-icon>
+            <ion-label position="stacked">Email</ion-label>
+            <ion-input
+              type="email"
+              [(ngModel)]="email"
+              name="email"
+              required
+              email
+              placeholder="Enter your email"
+              #emailInput="ngModel">
+            </ion-input>
+          </ion-item>
+          <ion-text color="danger" *ngIf="emailInput.invalid && emailInput.touched">
+            <p>Please enter a valid email</p>
+          </ion-text>
+
+          <ion-item>
+            <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+            <ion-label position="stacked">Password</ion-label>
+            <ion-input
+              [type]="showPassword ? 'text' : 'password'"
+              [(ngModel)]="password"
+              name="password"
+              required
+              placeholder="Enter your password"
+              #passwordInput="ngModel">
+            </ion-input>
+            <ion-button
+              fill="clear"
+              slot="end"
+              (click)="togglePasswordVisibility()"
+              type="button">
+              <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+            </ion-button>
+          </ion-item>
+          <ion-text color="danger" *ngIf="passwordInput.invalid && passwordInput.touched">
+            <p>Password is required</p>
+          </ion-text>
+
+          <ion-button
+            expand="block"
+            type="submit"
+            [disabled]="loginForm.invalid || isLoading"
+            class="login-btn">
+            <span *ngIf="!isLoading">Sign In</span>
+            <span *ngIf="isLoading">Signing In...</span>
+          </ion-button>
+        </form>
+
+        <div class="divider">
+          <span>OR</span>
+        </div>
+
+        <ion-button 
+          expand="block" 
+          color="secondary" 
+          (click)="loginWithGoogle()"
+          class="google-login-btn">
+          <ion-icon name="logo-google" slot="start"></ion-icon>
+          Sign in with Google
+        </ion-button>
+
+        <div class="auth-links">
+          <p>Don't have an account?</p>
+          <ion-button fill="clear" (click)="goToRegister()">
+            Sign Up
+          </ion-button>
+        </div>
+        
+        <div class="forgot-password-link">
+          <ion-button fill="clear" color="medium" (click)="goToForgotPassword()">
+            Forgot Password?
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

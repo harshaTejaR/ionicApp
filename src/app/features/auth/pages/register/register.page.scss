@@ -1,0 +1,33 @@
+.register-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 20px;
+}
+
+ion-card {
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.register-btn {
+  margin-top: 20px;
+}
+
+.auth-links {
+  text-align: center;
+  margin-top: 15px;
+}
+
+ion-card-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+ion-card-content p {
+  color: var(--ion-color-medium);
+  margin-bottom: 20px;
+}

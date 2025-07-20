@@ -1,0 +1,91 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Register</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <div class="register-container">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Create Account</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <form #registerForm="ngForm" (ngSubmit)="register()">
+          <ion-item>
+            <ion-icon name="person-outline" slot="start"></ion-icon>
+            <ion-label position="stacked">Full Name</ion-label>
+            <ion-input
+              type="text"
+              [(ngModel)]="name"
+              name="name"
+              required
+              placeholder="Enter your full name"
+              #nameInput="ngModel">
+            </ion-input>
+          </ion-item>
+          <ion-text color="danger" *ngIf="nameInput.invalid && nameInput.touched">
+            <p>Name is required</p>
+          </ion-text>
+
+          <ion-item>
+            <ion-icon name="mail-outline" slot="start"></ion-icon>
+            <ion-label position="stacked">Email</ion-label>
+            <ion-input
+              type="email"
+              [(ngModel)]="email"
+              name="email"
+              required
+              email
+              placeholder="Enter your email"
+              #emailInput="ngModel">
+            </ion-input>
+          </ion-item>
+          <ion-text color="danger" *ngIf="emailInput.invalid && emailInput.touched">
+            <p>Please enter a valid email</p>
+          </ion-text>
+
+          <ion-item>
+            <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+            <ion-label position="stacked">Password</ion-label>
+            <ion-input
+              [type]="showPassword ? 'text' : 'password'"
+              [(ngModel)]="password"
+              name="password"
+              required
+              minlength="6"
+              placeholder="Enter your password"
+              #passwordInput="ngModel">
+            </ion-input>
+            <ion-button
+              fill="clear"
+              slot="end"
+              (click)="togglePasswordVisibility()"
+              type="button">
+              <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+            </ion-button>
+          </ion-item>
+          <ion-text color="danger" *ngIf="passwordInput.invalid && passwordInput.touched">
+            <p>Password must be at least 6 characters</p>
+          </ion-text>
+
+          <ion-button
+            expand="block"
+            type="submit"
+            [disabled]="registerForm.invalid || isLoading"
+            class="register-btn">
+            <span *ngIf="!isLoading">Register</span>
+            <span *ngIf="isLoading">Creating Account...</span>
+          </ion-button>
+        </form>
+
+        <div class="auth-links">
+          <p>Already have an account?</p>
+          <ion-button fill="clear" (click)="goToLogin()">
+            Sign In
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>
